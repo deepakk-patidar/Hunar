@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "314368010915",
+    "firebase_url": "https://hunar-c7c16.firebaseio.com",
+    "project_id": "hunar-c7c16",
+    "storage_bucket": "hunar-c7c16.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:314368010915:android:ccb08027227ee1d6f52d16",
+        "android_client_info": {
+          "package_name": "com.ics.hunar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "314368010915-21fsvp4a9pqivojecgjvci9vuhe7porp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ics.hunar",
+            "certificate_hash": "032f94e5c069caa7452729f74822ea7a964800cc"
+          }
+        },
+        {
+          "client_id": "314368010915-oqgkouegc8eg3s6ii3uhbacp5ij0rnb7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnmPLd1B8VJiemQjwFxlEnCTVAOEocip8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "314368010915-oqgkouegc8eg3s6ii3uhbacp5ij0rnb7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
