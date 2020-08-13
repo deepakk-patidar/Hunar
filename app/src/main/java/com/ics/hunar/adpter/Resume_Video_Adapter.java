@@ -66,8 +66,8 @@ public class Resume_Video_Adapter extends RecyclerView.Adapter<Resume_Video_Adap
                 Intent intent = new Intent(context, VideoPlay1Activity.class);
                 intent.putExtra("URL", dlist.get(i).getVideo());
                 intent.putExtra("POSITION", dlist.get(i).getTotal_time());
+                intent.putExtra("SEEK_TO", dlist.get(i).getPalying_time());
                 context.startActivity(intent);
-
             });
 
         }

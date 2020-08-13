@@ -152,7 +152,6 @@ public class VideoPlay1Activity extends AppCompatActivity implements MediaPlayer
             }
             return false;
         });
-
     }
 
     private void searchVideoPlay(int levelNo, int levelNo1, int subCatId, String url) {
@@ -249,6 +248,10 @@ public class VideoPlay1Activity extends AppCompatActivity implements MediaPlayer
         progressBar.setVisibility(View.GONE);
         ivBtnFullScreen.setVisibility(View.VISIBLE);
         tvVideoTitle.setVisibility(View.VISIBLE);
+        if (getIntent().getStringExtra("SEEK_TO")!=null){
+            Toast.makeText(this, "WORKING", Toast.LENGTH_SHORT).show();
+            videoView.seekTo(Integer.parseInt(getIntent().getStringExtra("SEEK_TO")));
+        }
         hideController();
     }
 
