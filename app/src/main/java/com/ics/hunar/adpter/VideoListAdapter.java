@@ -163,7 +163,7 @@ public class VideoListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         public void bind(int position) {
             VideoNew videoNew = videoAList.get(position);
             tvVideoName.setText(videoNew.getVideoName());
-            Utils.loadImage(ivVideo, videoNew.getThumbnail(), Utils.getCircularProgressDrawable(context));
+            Utils.loadImage(ivVideo, videoNew.getThumbnail(), Utils.getCircularProgressDrawable(context, 5, 15));
             if (videoNew.getIsUnlocked().equals("1")) {
                 ivVideoLock.setImageResource(R.drawable.ic_open_padlock);
             } else {

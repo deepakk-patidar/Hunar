@@ -2,17 +2,22 @@ package com.ics.hunar.activity;
 
 
 import android.Manifest;
+import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -29,6 +34,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -36,7 +43,16 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.StringRequest;
+import com.facebook.AccessToken;
+import com.facebook.FacebookRequestError;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.HttpMethod;
 import com.facebook.login.LoginManager;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
@@ -48,6 +64,7 @@ import com.ics.hunar.helper.AudienceProgress;
 import com.ics.hunar.helper.CircleImageView;
 import com.ics.hunar.helper.Session;
 import com.ics.hunar.helper.SharedPreferencesUtil;
+import com.ics.hunar.helper.Utils;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -81,9 +98,12 @@ public class ProfileActivity extends AppCompatActivity {
     public static int SELECT_FILE = 110;
     Uri fileUri;
     public ProgressBar progressBar;
+    AlertDialog alertDialog;
+    ;
     private String filePath = null;
     File sourceFile;
     long totalSize = 0;
+    private FirebaseAuth mAuth;
     public FloatingActionButton fabProfile;
     public TextView tvEmailId, tvUpdate, tvLogout;
     public AudienceProgress progress;
@@ -99,6 +119,7 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
         SharedPreferencesUtil.init(this);
+        mAuth = FirebaseAuth.getInstance();
         mainLayout = findViewById(R.id.mainLayout);
         toolbar = findViewById(R.id.toolBar);
         setSupportActionBar(toolbar);
@@ -302,6 +323,16 @@ public class ProfileActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void Searching(View view) {
+        startActivity(new Intent(ProfileActivity.this, SearchingActivity.class));
+        finish();
+    }
+
+    public void logOut(View view) {
+        SignOutWarningDialog();
+    }
+
+
     private class UploadFileToServer extends AsyncTask<Void, Integer, String> {
         @Override
         protected void onPreExecute() {
@@ -396,6 +427,16 @@ public class ProfileActivity extends AppCompatActivity {
 
     }
 
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     public void SignOutWarningDialog() {
         final android.app.AlertDialog.Builder alertDialog = new android.app.AlertDialog.Builder(ProfileActivity.this);
         // Setting Dialog Message
@@ -410,7 +451,8 @@ public class ProfileActivity extends AppCompatActivity {
                 Session.clearUserSession(ProfileActivity.this);
                 SharedPreferencesUtil.clearAllPreference();
                 LoginManager.getInstance().logOut();
-                LoginActivity.mAuth.signOut();
+                mAuth.signOut();
+                logOut();
                 Intent intentLogin = new Intent(ProfileActivity.this, LoginActivity.class);
 //                intentLogin.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
 //                intentLogin.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -427,12 +469,141 @@ public class ProfileActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
-            return true;
+    private void logOut() {
+        if (AccessToken.getCurrentAccessToken() != null) {
+            String fb_id = SharedPreferencesUtil.read(SharedPreferencesUtil.FB_ID, "");
+            GraphRequest delPermRequest = new GraphRequest(AccessToken.getCurrentAccessToken(), "/" + fb_id + "/permissions/", null, HttpMethod.DELETE, new GraphRequest.Callback() {
+                @Override
+                public void onCompleted(GraphResponse graphResponse) {
+                    if (graphResponse != null) {
+                        FacebookRequestError error = graphResponse.getError();
+                        if (error != null) {
+
+                        } else {
+                        }
+                    }
+                }
+            });
+            Log.d("Logout FB", "Executing revoke permissions with graph path" + delPermRequest.getGraphPath());
+            delPermRequest.executeAsync();
         }
-        return super.onOptionsItemSelected(item);
+        GoogleSignInAccount google_acc = GoogleSignIn.getLastSignedInAccount(ProfileActivity.this);
+        if (google_acc != null) {
+            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestIdToken(getResources().getString(R.string.default_web_client_id))
+                    .requestEmail().build();
+            GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(ProfileActivity.this, gso);
+            mGoogleSignInClient.signOut();
+        } else {
+            Log.e("------", "NO GOOGLE SIGN IN HERE");
+        }
     }
+
+    public void Home(View view) {
+        startActivity(new Intent(ProfileActivity.this, MainActivity.class).putExtra("type", "privacy"));
+        finish();
+    }
+
+    public void StartQuiz(View view) {
+        startGame();
+    }
+
+    private void startGame() {
+
+        if (Session.getBoolean(Session.LANG_MODE, getApplicationContext())) {
+            if (Session.getCurrentLanguage(getApplicationContext()).equals(Constant.D_LANG_ID)) {
+                if (alertDialog != null)
+                    alertDialog.show();
+
+            } else {
+                Intent intent = new Intent(ProfileActivity.this, CategoryActivity.class);
+                startActivity(intent);
+            }
+        } else {
+            Intent intent = new Intent(ProfileActivity.this, CategoryActivity.class);
+            startActivity(intent);
+        }
+
+    }
+
+    public void UserProfile(View view) {
+        Utils.btnClick(view, ProfileActivity.this);
+        if (!Session.isLogin(ProfileActivity.this)) {
+            LoginPopUp();
+        } else {
+            // UpdateProfile();
+        }
+    }
+
+    //    public void UpdateProfile() {
+//        Intent intent = new Intent(ProfileActivity.this, ProfileActivity.class);
+//        startActivity(intent);
+//    }
+    public void Settings(View view) {
+        Utils.btnClick(view, ProfileActivity.this);
+        Utils.CheckVibrateOrSound(ProfileActivity.this);
+        Intent playQuiz = new Intent(ProfileActivity.this, FavoriteActivity.class);
+        startActivity(playQuiz);
+        overridePendingTransition(R.anim.open_next, R.anim.close_next);
+    }
+
+    public void LoginPopUp() {
+        Intent intent = new Intent(getApplicationContext(), LoginPopup.class);
+        startActivity(intent);
+    }
+
+    @Override
+    protected void onPause() {
+        AppController.StopSound();
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AppController.playSound();
+        if (Utils.isNetworkAvailable(ProfileActivity.this)) {
+            Utils.GetSystemConfig(getApplicationContext());
+
+            if (Session.getBoolean(Session.LANG_MODE, getApplicationContext())) {
+                LanguageDialog(ProfileActivity.this);
+            }
+            invalidateOptionsMenu();
+            if (Session.isLogin(ProfileActivity.this)) {
+                if (FirebaseAuth.getInstance().getUid() != null)
+                    Utils.RemoveGameRoomId(FirebaseAuth.getInstance().getUid());
+            }
+        }
+    }
+
+    public void LanguageDialog(Activity activity) {
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(activity);
+        LayoutInflater inflater1 = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View dialogView = inflater1.inflate(R.layout.language_dialog, null);
+        dialog.setView(dialogView);
+
+        RecyclerView languageView = dialogView.findViewById(R.id.recyclerView);
+        languageView.setLayoutManager(new LinearLayoutManager(activity));
+        alertDialog = dialog.create();
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
+        Utils.GetLanguage(languageView, activity, alertDialog);
+
+    }
+
+    public void Favorite(View view) {
+        Utils.btnClick(view, ProfileActivity.this);
+        Utils.CheckVibrateOrSound(ProfileActivity.this);
+        Intent playQuiz = new Intent(ProfileActivity.this, FavoriteActivity.class);
+        startActivity(playQuiz);
+        overridePendingTransition(R.anim.open_next, R.anim.close_next);
+        finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(ProfileActivity.this, MainActivity.class).putExtra("type", "privacy"));
+        finish();
+    }
+
 }

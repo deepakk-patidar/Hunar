@@ -347,6 +347,87 @@
 
     </ScrollView>
 
+    <LinearLayout
+        android:id="@+id/bottomLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        android:minHeight="?attr/actionBarSize"
+        android:orientation="horizontal"
+        android:weightSum="5">
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:onClick="Searching"
+            android:padding="@dimen/margin_10dp"
+            app:srcCompat="@drawable/ic_baseline_search" />
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:onClick="Favorite"
+            android:padding="@dimen/margin_10dp"
+            app:srcCompat="@drawable/ic_heart_line" />
+
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:onClick="UserProfile"
+            android:padding="@dimen/margin_10dp"
+            app:srcCompat="@drawable/user" />
+
+
+        <ImageView
+            android:id="@+id/imgLogout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:onClick="logOut"
+            android:padding="@dimen/margin_10dp"
+            app:srcCompat="@drawable/login" />
+
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/rlHome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/round_shadow1"
+        android:layoutDirection="ltr"
+        android:onClick="Home">
+
+        <ImageView
+            android:id="@+id/imgQuiz"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerInParent="true"
+            android:padding="@dimen/margin_dp"
+            app:srcCompat="@drawable/ic_baseline_home" />
+    </RelativeLayout>
+
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"

@@ -703,13 +703,12 @@ public class Utils {
                 .into(imageView);
     }
 
-    public static CircularProgressDrawable getCircularProgressDrawable(Context context) {
+    public static CircularProgressDrawable getCircularProgressDrawable(Context context, float width, float radius) {
         CircularProgressDrawable circularProgressDrawable = new CircularProgressDrawable(context);
-        circularProgressDrawable.setStrokeWidth(5f);
-        circularProgressDrawable.setCenterRadius(13f);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            circularProgressDrawable.setTint(context.getResources().getColor(R.color.colorPrimary));
-        }
+        int[] color = {context.getResources().getColor(R.color.colorPrimary)};
+        circularProgressDrawable.setColorSchemeColors(color);
+        circularProgressDrawable.setStrokeWidth(width);
+        circularProgressDrawable.setCenterRadius(radius);
         circularProgressDrawable.start();
         return circularProgressDrawable;
     }

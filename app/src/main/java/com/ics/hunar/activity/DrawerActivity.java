@@ -48,7 +48,7 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
         tvName = view.findViewById(R.id.tvName);
         tvEmail = view.findViewById(R.id.tvEmail);
 
-        imgProfile.setDefaultImageResId(R.drawable.ic_launcher);
+        imgProfile.setDefaultImageResId(R.drawable.hunar_logo_new);
         if (Session.isLogin(getApplicationContext())) {
             imgProfile.setImageUrl(Session.getUserData(Session.PROFILE, getApplicationContext()), imageLoader);
             tvName.setText(getString(R.string.hello) + Session.getUserData(Session.NAME, getApplicationContext()));

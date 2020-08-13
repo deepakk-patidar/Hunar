@@ -3,6 +3,8 @@ package com.ics.hunar.helper;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.google.firebase.iid.FirebaseInstanceId;
+
 public class SharedPreferencesUtil {
     public static final String PROFILE = "profile";
     private static SharedPreferences mSharedPref;
@@ -16,10 +18,16 @@ public class SharedPreferencesUtil {
     public static final String OTP_USER_ID = "otp_user_id";
     public static final String SUB_CATEGORY_NAME = "sub_category_name";
     public static final String LAST_PLAY_VIDEO = "last_play_video";
+    public static final String FB_ID = "fb_id";
 
     public static void init(Context context) {
         if (mSharedPref == null)
             mSharedPref = context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE);
+    }
+
+
+    public static String getDeviceId() {
+        return FirebaseInstanceId.getInstance().getToken();
     }
 
     public static String read(String key, String defValue) {

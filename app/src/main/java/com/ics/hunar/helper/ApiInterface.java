@@ -1,5 +1,6 @@
 package com.ics.hunar.helper;
 
+import com.ics.hunar.model.BannerResponse;
 import com.ics.hunar.model.CheckOTPResponse;
 import com.ics.hunar.model.FavoriteResponse;
 import com.ics.hunar.model.NormalLoginResponse;
@@ -9,6 +10,8 @@ import com.ics.hunar.model.SendOtpResponse;
 import com.ics.hunar.model.UnlockStatusResponse;
 import com.ics.hunar.model.VideoNewResponse;
 import com.ics.hunar.model.VideoStatusResponse;
+import com.ics.hunar.model.features.FeaturesResponse;
+import com.ics.hunar.model.searching.SearchingResponse;
 
 import java.util.Map;
 
@@ -60,4 +63,16 @@ public interface ApiInterface {
     @FormUrlEncoded
     @POST("./")
     Call<UnlockStatusResponse> unlockVideoStatus(@Field("access_key") String access_key, @Field("post_video_unlocked_status") String post_video_unlocked_status, @Field("user_id") String user_id, @Field("video_id") String video_id);
+
+    @FormUrlEncoded
+    @POST("./")
+    Call<SearchingResponse> search(@Field("access_key") String access_key, @Field("search") String search, @Field("search_key") String search_key, @Field("user_id") String user_id, @Field("language_id") String language_id);
+
+    @FormUrlEncoded
+    @POST("./")
+    Call<BannerResponse> getBanner(@Field("access_key") String access_key, @Field("get_banners") String get_banners);
+
+    @FormUrlEncoded
+    @POST("./")
+    Call<FeaturesResponse> getFeatures(@Field("access_key") String access_key, @Field("get_featured") String get_featured);
 }

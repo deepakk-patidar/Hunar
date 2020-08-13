@@ -40,6 +40,7 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.GraphRequest;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -340,6 +341,27 @@ public class LoginActivity extends AppCompatActivity {
 
     private void handleFacebookAccessToken(AccessToken token) {
         showProgressDialog();
+        GraphRequest graphRequest = GraphRequest.newMeRequest(token, (object, response) -> {
+
+            try {
+                String name = object.getString("first_name");
+                String last_name = object.getString("last_name");
+                String email = object.getString("email");
+                String fbb_id = object.getString("id");
+                SharedPreferencesUtil.write(SharedPreferencesUtil.FB_ID, fbb_id);
+//                checkEmail(email, Common.getDeviceId(), "Android", name);
+
+            } catch (JSONException e) {
+                Toast.makeText(LoginActivity.this, "Email Id Not Found in Facebook...", Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
+            }
+        });
+
+        Bundle params = new Bundle();
+        params.putString("fields", "first_name,last_name,email,id");
+        graphRequest.setParameters(params);
+        graphRequest.executeAsync();
+
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
