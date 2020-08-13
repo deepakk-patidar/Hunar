@@ -215,7 +215,6 @@
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
                 android:background="@drawable/guest_bg"
                 android:onClick="PlayAsGuest">
 
@@ -224,6 +223,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="2dp"
                     app:srcCompat="@drawable/ic_guest" />
+
             </RelativeLayout>
         </LinearLayout>
     </LinearLayout>

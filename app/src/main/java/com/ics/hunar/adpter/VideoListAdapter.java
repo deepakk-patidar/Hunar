@@ -183,7 +183,10 @@ public class VideoListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             itemView.setOnClickListener(v -> {
                 if (videoNew.getVideo() != null) {
                     if (videoNew.getIsUnlocked().equals("1")) {
-                        context.startActivity(new Intent(context, VideoPlay1Activity.class).putExtra("URL", videoNew.getVideo()).putExtra("POSITION", position));
+                        Intent intent = new Intent(context, VideoPlay1Activity.class);
+                        intent.putExtra("URL", videoNew.getVideo());
+                        intent.putExtra("POSITION", position);
+                        context.startActivity(intent);
                     } else {
                         AlertDialogUtil.showAlertDialogBox(context, "Warning", "Please watch previous video first", false, "Ok", "", "xyz");
                     }

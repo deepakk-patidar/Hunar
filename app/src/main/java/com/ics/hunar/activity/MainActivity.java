@@ -50,6 +50,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
+import com.google.gson.Gson;
 import com.ics.hunar.Constant;
 import com.ics.hunar.R;
 import com.ics.hunar.adpter.BannerViewPagerAdapter;
@@ -225,6 +226,7 @@ public class MainActivity extends DrawerActivity implements View.OnClickListener
             @Override
             public void onResponse(Call<FeaturesResponse> call, retrofit2.Response<FeaturesResponse> response) {
                 pbFeatures.setVisibility(View.GONE);
+                Utils.retro_call_info(""+response.raw().request().url(),""+new Gson().toJson(response.body()));
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
                         if (response.body().getError().equalsIgnoreCase("false")) {
@@ -291,6 +293,7 @@ public class MainActivity extends DrawerActivity implements View.OnClickListener
             @Override
             public void onResponse(Call<BannerResponse> call, retrofit2.Response<BannerResponse> response) {
                 pbViewPager.setVisibility(View.GONE);
+                Utils.retro_call_info(""+response.raw().request().url(),""+new Gson().toJson(response.body()));
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
                         if (response.body().getError().equalsIgnoreCase("false")) {

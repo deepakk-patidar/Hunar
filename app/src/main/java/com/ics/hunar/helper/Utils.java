@@ -19,6 +19,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Vibrator;
 import android.speech.tts.TextToSpeech;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -113,6 +114,12 @@ public class Utils {
         }
     }
 
+    public static void retro_call_info(String url, String body){
+        Log.e(" Url "," =  "+url+"\n");
+        Log.e(" Response Body "," =  "+body+"\n");
+    }
+
+
     public static void setrightAnssound(Context mContext) {
         try {
             int resourceId = R.raw.right;
@@ -151,6 +158,16 @@ public class Utils {
             }
             sVibrator.vibrate(duration);
         }
+    }
+
+    public static  String get_ms_formatvideo(int duration2){
+
+        int duration = duration2/1000;
+        int hours = duration / 3600;
+        int minutes = (duration / 60) - (hours * 60);
+        int seconds = duration - (hours * 3600) - (minutes * 60) ;
+
+        return ""+minutes+":"+seconds;
     }
 
 

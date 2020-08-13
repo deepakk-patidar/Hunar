@@ -1,6 +1,7 @@
 package com.ics.hunar.adpter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +13,10 @@ import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.ics.hunar.Constant;
 import com.ics.hunar.R;
+import com.ics.hunar.activity.CategoryActivity;
+import com.ics.hunar.activity.SubcategoryActivity;
 import com.ics.hunar.helper.Utils;
 import com.ics.hunar.model.features.Category;
 import com.ics.hunar.model.features.Subcategory;
@@ -43,6 +47,16 @@ public class FeaturesAdapter extends RecyclerView.Adapter<FeaturesAdapter.Normal
     public void onBindViewHolder(@NonNull NormalViewHolder holder, int position) {
         if (categoryList.size() > position) {
             Category category = categoryList.get(position);
+
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Constant.CATE_ID = Integer.parseInt(category.getId());
+                    Constant.cate_name = category.getCategoryName();
+                        Intent intent = new Intent(context, SubcategoryActivity.class);
+                        context.startActivity(intent);
+                }});
+
             if (heading.equalsIgnoreCase("Features")) {
                 if (category.getFeatured().equals("1")) {
                     holder.tvFeatureItemName.setText(category.getCategoryName());
@@ -51,7 +65,7 @@ public class FeaturesAdapter extends RecyclerView.Adapter<FeaturesAdapter.Normal
                     invisibleView(holder.cvItemParent);
                 }
             }
-            if (heading.equalsIgnoreCase("Trending List 1")) {
+            if (heading.equalsIgnoreCase("Featured Courses")) {
                 if (category.getTrending1().equals("1")) {
                     holder.tvFeatureItemName.setText(category.getCategoryName());
                     Utils.loadImage(holder.ivFeatureItem, category.getImage(), Utils.getCircularProgressDrawable(context, 5, 15));
@@ -59,7 +73,7 @@ public class FeaturesAdapter extends RecyclerView.Adapter<FeaturesAdapter.Normal
                     invisibleView(holder.cvItemParent);
                 }
             }
-            if (heading.equalsIgnoreCase("Trending List 2")) {
+            if (heading.equalsIgnoreCase("Trending")) {
                 if (category.getTrending2().equals("1")) {
                     holder.tvFeatureItemName.setText(category.getCategoryName());
                     Utils.loadImage(holder.ivFeatureItem, category.getImage(), Utils.getCircularProgressDrawable(context, 5, 15));

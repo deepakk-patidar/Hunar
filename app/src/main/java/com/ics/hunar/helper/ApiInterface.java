@@ -75,4 +75,16 @@ public interface ApiInterface {
     @FormUrlEncoded
     @POST("./")
     Call<FeaturesResponse> getFeatures(@Field("access_key") String access_key, @Field("get_featured") String get_featured);
+
+    @FormUrlEncoded
+    @POST("./")
+    Call<FavoriteResponse> send_resume_timing(
+            @Field("access_key") String access_key,
+            @Field("post_currently_playing_video") String post_currently_playing_video,
+            @Field("user_id") String user_id,
+            @Field("video_id") String video_id,
+            @Field("palying_time") String palying_time,
+            @Field("total_time") String total_time
+    );
+
 }

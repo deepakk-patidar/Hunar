@@ -24,16 +24,19 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.gson.Gson;
 import com.ics.hunar.R;
 import com.ics.hunar.helper.AlertDialogUtil;
 import com.ics.hunar.helper.ApiClient;
 import com.ics.hunar.helper.ApiInterface;
 import com.ics.hunar.helper.NetworkUtils;
 import com.ics.hunar.helper.Session;
+import com.ics.hunar.helper.Utils;
 import com.ics.hunar.helper.ValidationUtil;
 import com.ics.hunar.model.NormalSignUpResponse;
 import com.ics.hunar.model.SendOtpResponse;
 
+import okhttp3.internal.Util;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -273,6 +276,7 @@ public class SignUpActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<SendOtpResponse> call, Response<SendOtpResponse> response) {
                 hideProgressDialog();
+                Utils.retro_call_info(""+response.raw().request().url(),""+new Gson().toJson(response.body()));
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
                         if (!response.body().getError()) {

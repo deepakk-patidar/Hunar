@@ -1,6 +1,7 @@
 package com.ics.hunar.activity;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
@@ -8,6 +9,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +28,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.google.gson.Gson;
 import com.ics.hunar.Constant;
 import com.ics.hunar.R;
 import com.ics.hunar.helper.AlertDialogUtil;
@@ -72,7 +75,7 @@ public class VideoPlay1Activity extends AppCompatActivity implements MediaPlayer
     private VideoListPlayAdapter videoListPlayAdapter;
     private ApiInterface apiInterface;
     private String userId;
-
+    private Boolean resume_time = false;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -82,7 +85,7 @@ public class VideoPlay1Activity extends AppCompatActivity implements MediaPlayer
         url = getIntent().getStringExtra("URL");
         position = getIntent().getIntExtra("POSITION", 0);
         videoId = getIntent().getIntExtra("VIDEO_ID", 0);
-//        levelNo = MainActivity.dbHelper.GetLevelById(Constant.CATE_ID, Constant.SUB_CAT_ID);
+//      levelNo = MainActivity.dbHelper.GetLevelById(Constant.CATE_ID, Constant.SUB_CAT_ID);
         // andExoPlayerView = findViewById(R.id.andExoPlayerView);
         SharedPreferencesUtil.init(this);
         apiInterface = ApiClient.getMainClient().create(ApiInterface.class);
@@ -247,7 +250,6 @@ public class VideoPlay1Activity extends AppCompatActivity implements MediaPlayer
         ivBtnFullScreen.setVisibility(View.VISIBLE);
         tvVideoTitle.setVisibility(View.VISIBLE);
         hideController();
-
     }
 
     @Override
@@ -340,7 +342,11 @@ public class VideoPlay1Activity extends AppCompatActivity implements MediaPlayer
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             ivBtnFullScreen.setImageResource(R.drawable.ic_baseline_fullscreen);
         } else {
-            super.onBackPressed();
+            if (resume_time){
+            super.onBackPressed();}
+            else{
+                send_resume_time();
+            }
         }
     }
 
@@ -406,6 +412,7 @@ public class VideoPlay1Activity extends AppCompatActivity implements MediaPlayer
                             progressBar.setVisibility(View.VISIBLE);
                             tvVideoTitle.setText(videoAList.get(position).getVideoName());
                             videoView.setVideoURI(Uri.parse(videoAList.get(position).getVideo()));
+                            videoId = Integer.parseInt(videoAList.get(position).getId());
                             videoView.requestFocus();
                             videoView.start();
                             videoAList.get(position).setIsPlayed("1");
@@ -465,6 +472,7 @@ public class VideoPlay1Activity extends AppCompatActivity implements MediaPlayer
             holder.itemView.setOnClickListener(v -> {
                 if (videoNew.getIsUnlocked().equals("1")) {
                     VideoPlay1Activity.this.position = position;
+                    VideoPlay1Activity.this.videoId = Integer.parseInt(videoAList.get(position).getId());
                     progressBar.setVisibility(View.VISIBLE);
                     tvVideoTitle.setText(videoAList.get(position).getVideoName());
                     videoView.setVideoURI(Uri.parse(videoAList.get(position).getVideo()));
@@ -604,7 +612,7 @@ public class VideoPlay1Activity extends AppCompatActivity implements MediaPlayer
         });
     }
 
-//    private void getVideoStatus(String user_id) {
+    //    private void getVideoStatus(String user_id) {
 //        ApiInterface apiInterface = ApiClient.getMainClient().create(ApiInterface.class);
 //        Call<VideoStatusResponse> videoStatusResponseCall = apiInterface.getVideoStatus("6808", "1", user_id);
 //        videoStatusResponseCall.enqueue(new Callback<VideoStatusResponse>() {
@@ -654,4 +662,51 @@ public class VideoPlay1Activity extends AppCompatActivity implements MediaPlayer
             }
         });
     }
+
+    private void send_resume_time(){
+
+        ProgressDialog pd = new ProgressDialog(VideoPlay1Activity.this);
+        pd.setCanceledOnTouchOutside(false);
+        pd.setMessage("Processing...");
+        pd.show();
+
+        String userr_id = "";
+        if (!Session.getUserData(Session.USER_ID, this).equals("")) {
+            userr_id = Session.getUserData(Session.USER_ID, this);
+        } else {
+            userr_id = SharedPreferencesUtil.read(SharedPreferencesUtil.USER_ID, "");
+        }
+        Log.e("Video Details ","  >>>>>>>>> \n"+" Current Position - "
+                +Utils.get_ms_formatvideo(videoView.getCurrentPosition())+"\n Total Length - "
+                +Utils.get_ms_formatvideo(videoView.getDuration())+ "--- User id  "+userr_id+"---  Video id "+videoId+ " --- " );
+
+        ApiInterface apiInterface = ApiClient.getMainClient().create(ApiInterface.class);
+        Call<FavoriteResponse> send_resume_time_api = apiInterface.send_resume_timing("6808", "1",
+                userr_id, ""+videoId,""+videoView.getCurrentPosition(),""+videoView.getDuration());
+
+        send_resume_time_api.enqueue(new Callback<FavoriteResponse>() {
+            @Override
+            public void onResponse(Call<FavoriteResponse> call, Response<FavoriteResponse> response) {
+                pd.dismiss();
+                Utils.retro_call_info(""+response.raw().request().url(),new Gson().toJson(response.body()));
+                if (response.isSuccessful()){
+                    if (!response.body().getError()) {
+                        Toast.makeText(VideoPlay1Activity.this, "Resume Time Saved...", Toast.LENGTH_SHORT).show();
+                        resume_time = true;
+                        onBackPressed();
+                    }else{
+
+                    }
+                }else{
+                }
+            }
+
+            @Override
+            public void onFailure(Call<FavoriteResponse> call, Throwable t) {
+                pd.dismiss();
+                Toast.makeText(VideoPlay1Activity.this, "Resume Time, Not Saved...", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 }
