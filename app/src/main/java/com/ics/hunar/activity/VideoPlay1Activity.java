@@ -75,7 +75,7 @@ public class VideoPlay1Activity extends AppCompatActivity implements MediaPlayer
     private VideoListPlayAdapter videoListPlayAdapter;
     private ApiInterface apiInterface;
     private String userId;
-    private Boolean resume_time = false;
+    private Boolean resume_time = false, first_check = false;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -225,7 +225,6 @@ public class VideoPlay1Activity extends AppCompatActivity implements MediaPlayer
 //                                    Toast.makeText(VideoPlay1Activity.this, "not found", Toast.LENGTH_SHORT).show();
 //                                }
 //                            });
-
                         } else {
                             tvVideoPlayerListError.setVisibility(View.VISIBLE);
                             tvVideoPlayerListError.setText("not found");
@@ -248,9 +247,10 @@ public class VideoPlay1Activity extends AppCompatActivity implements MediaPlayer
         progressBar.setVisibility(View.GONE);
         ivBtnFullScreen.setVisibility(View.VISIBLE);
         tvVideoTitle.setVisibility(View.VISIBLE);
-        if (getIntent().getStringExtra("SEEK_TO")!=null){
+        if (getIntent().getStringExtra("SEEK_TO")!=null && !first_check){
             Toast.makeText(this, "WORKING", Toast.LENGTH_SHORT).show();
             videoView.seekTo(Integer.parseInt(getIntent().getStringExtra("SEEK_TO")));
+            first_check = true;
         }
         hideController();
     }
