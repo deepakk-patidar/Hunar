@@ -94,11 +94,9 @@ public class VideoPlay1Activity extends AppCompatActivity implements MediaPlayer
         } else {
             userId = SharedPreferencesUtil.read(SharedPreferencesUtil.USER_ID, "");
         }
-        if (videoId > 0) {
-            searchVideoPlay(levelNo, levelNo, Constant.SUB_CAT_ID, url);
-        }
 
         videoView = findViewById(R.id.videoView);
+        srlVideoPlayerList = findViewById(R.id.srlVideoPlayerList);
         clVideoList = findViewById(R.id.clVideoList);
         ivBtnFullScreen = findViewById(R.id.ivBtnFullScreen);
         rvVideoList = findViewById(R.id.rvVideoList);
@@ -121,6 +119,9 @@ public class VideoPlay1Activity extends AppCompatActivity implements MediaPlayer
                 getVideoPlayer(levelNo, levelNo, Constant.SUB_CAT_ID);
             }
         });
+      /*if (videoId > 0) {
+            searchVideoPlay(levelNo, levelNo, Constant.SUB_CAT_ID, url);
+        }*/
         //Set MediaController  to enable play, pause, forward, etc options.
         // getVideoStatus(SharedPreferencesUtil.read(SharedPreferencesUtil.USER_ID, ""));
         getVideoPlayer(levelNo, levelNo, Constant.SUB_CAT_ID);

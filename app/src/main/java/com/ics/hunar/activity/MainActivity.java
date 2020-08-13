@@ -613,6 +613,17 @@ public class MainActivity extends DrawerActivity implements View.OnClickListener
         super.onBackPressed();
     }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        if (!Session.isLogin(MainActivity.this)) {
+            tvResumeHeading.setVisibility(View.GONE);
+            rvHomeResumeHistory.setVisibility(View.GONE);
+        }else{
+            get_resumed_video();
+        }
+    }
+
     public void downloadNavigation(View view) {
         Toast.makeText(this, "not available", Toast.LENGTH_SHORT).show();
     }
