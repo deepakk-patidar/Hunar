@@ -249,7 +249,6 @@ public class VideoPlay1Activity extends AppCompatActivity implements MediaPlayer
         ivBtnFullScreen.setVisibility(View.VISIBLE);
         tvVideoTitle.setVisibility(View.VISIBLE);
         if (getIntent().getStringExtra("SEEK_TO")!=null && !first_check){
-            Toast.makeText(this, "WORKING", Toast.LENGTH_SHORT).show();
             videoView.seekTo(Integer.parseInt(getIntent().getStringExtra("SEEK_TO")));
             first_check = true;
         }
