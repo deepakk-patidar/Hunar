@@ -55,6 +55,7 @@ import com.ics.hunar.Constant;
 import com.ics.hunar.R;
 import com.ics.hunar.adpter.BannerViewPagerAdapter;
 import com.ics.hunar.adpter.FeaturesAdapter;
+import com.ics.hunar.adpter.Resume_Video_Adapter;
 import com.ics.hunar.helper.AlertDialogUtil;
 import com.ics.hunar.helper.ApiClient;
 import com.ics.hunar.helper.ApiInterface;
@@ -65,6 +66,7 @@ import com.ics.hunar.helper.Session;
 import com.ics.hunar.helper.SharedPreferencesUtil;
 import com.ics.hunar.helper.Utils;
 import com.ics.hunar.model.BannerResponse;
+import com.ics.hunar.model.Resume_List_Model;
 import com.ics.hunar.model.features.FeaturesResponse;
 
 import org.json.JSONException;
@@ -212,6 +214,13 @@ public class MainActivity extends DrawerActivity implements View.OnClickListener
 
         //}
         btnRetry.setOnClickListener(v -> getBanner());
+
+        if (!Session.isLogin(MainActivity.this)) {
+            tvResumeHeading.setVisibility(View.GONE);
+            rvHomeResumeHistory.setVisibility(View.GONE);
+        }else{
+            get_resumed_video();
+        }
 
         btnFeaturesRetry.setOnClickListener(v -> getFeatures());
         getFeatures();
@@ -502,6 +511,27 @@ public class MainActivity extends DrawerActivity implements View.OnClickListener
         Intent playQuiz = new Intent(MainActivity.this, FavoriteActivity.class);
         startActivity(playQuiz);
         overridePendingTransition(R.anim.open_next, R.anim.close_next);
+    }
+
+    private void get_resumed_video(){
+
+        apiInterface.get_resume_time("6808","1",
+                Session.getUserData(Session.USER_ID, MainActivity.this),"1").enqueue(new Callback<Resume_List_Model>() {
+            @Override
+            public void onResponse(Call<Resume_List_Model> call, retrofit2.Response<Resume_List_Model> response) {
+                Utils.retro_call_info(""+response.raw().request().url(),""+new Gson().toJson(response.body()));
+                if (!response.body().getError()){
+                    rvHomeResumeHistory.setLayoutManager(new LinearLayoutManager(MainActivity.this,LinearLayoutManager.HORIZONTAL,false));
+                    rvHomeResumeHistory.setAdapter(new Resume_Video_Adapter(MainActivity.this,response.body().getData()));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Resume_List_Model> call, Throwable t) {
+                Toast.makeText(context, ""+t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
     public void LoginPopUp() {

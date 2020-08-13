@@ -341,7 +341,9 @@ public class VideoPlay1Activity extends AppCompatActivity implements MediaPlayer
         if (videoView.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             ivBtnFullScreen.setImageResource(R.drawable.ic_baseline_fullscreen);
-        } else {
+        } else if (!Session.isLogin(VideoPlay1Activity.this)){
+            super.onBackPressed();
+        }else {
             if (resume_time){
             super.onBackPressed();}
             else{
@@ -678,11 +680,11 @@ public class VideoPlay1Activity extends AppCompatActivity implements MediaPlayer
         }
         Log.e("Video Details ","  >>>>>>>>> \n"+" Current Position - "
                 +Utils.get_ms_formatvideo(videoView.getCurrentPosition())+"\n Total Length - "
-                +Utils.get_ms_formatvideo(videoView.getDuration())+ "--- User id  "+userr_id+"---  Video id "+videoId+ " --- " );
+                +Utils.get_ms_formatvideo(videoView.getDuration())+ "--- User id  "+userr_id+"---  Video id "+videoId+ " --- "+"--- POSITION "+position+ " --- " );
 
         ApiInterface apiInterface = ApiClient.getMainClient().create(ApiInterface.class);
         Call<FavoriteResponse> send_resume_time_api = apiInterface.send_resume_timing("6808", "1",
-                userr_id, ""+videoId,""+videoView.getCurrentPosition(),""+videoView.getDuration());
+                userr_id, ""+videoId,""+videoView.getCurrentPosition(),""+position);
 
         send_resume_time_api.enqueue(new Callback<FavoriteResponse>() {
             @Override
@@ -695,7 +697,6 @@ public class VideoPlay1Activity extends AppCompatActivity implements MediaPlayer
                         resume_time = true;
                         onBackPressed();
                     }else{
-
                     }
                 }else{
                 }

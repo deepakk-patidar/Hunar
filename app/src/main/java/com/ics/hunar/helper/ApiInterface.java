@@ -6,6 +6,7 @@ import com.ics.hunar.model.FavoriteResponse;
 import com.ics.hunar.model.NormalLoginResponse;
 import com.ics.hunar.model.NormalSignUpResponse;
 import com.ics.hunar.model.PasswordUpdateResponse;
+import com.ics.hunar.model.Resume_List_Model;
 import com.ics.hunar.model.SendOtpResponse;
 import com.ics.hunar.model.UnlockStatusResponse;
 import com.ics.hunar.model.VideoNewResponse;
@@ -86,5 +87,16 @@ public interface ApiInterface {
             @Field("palying_time") String palying_time,
             @Field("total_time") String total_time
     );
+
+    @FormUrlEncoded
+    @POST("./")
+    Call<Resume_List_Model> get_resume_time(
+            @Field("access_key") String access_key,
+            @Field("get_currently_playing_video") String get_currently_playing_video,
+            @Field("user_id") String user_id,
+            @Field("video_id") String video_id
+    );
+
+
 
 }
