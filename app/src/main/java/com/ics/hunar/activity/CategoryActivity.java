@@ -11,6 +11,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -20,6 +21,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -29,7 +31,6 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.NetworkImageView;
 import com.android.volley.toolbox.StringRequest;
 import com.google.android.material.snackbar.Snackbar;
 import com.ics.hunar.Constant;
@@ -74,7 +75,7 @@ public class CategoryActivity extends AppCompatActivity implements Utils.OnLangC
         progressBar = findViewById(R.id.progressBar);
         swipeRefreshLayout = findViewById(R.id.swipeLayout);
         recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(CategoryActivity.this));
+        recyclerView.setLayoutManager(new GridLayoutManager(CategoryActivity.this, 3));
         Utils.GetSystemConfig(getApplicationContext());
         getData();
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -243,7 +244,7 @@ public class CategoryActivity extends AppCompatActivity implements Utils.OnLangC
 
         @Override
         public CategoryAdapter.ItemRowHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_category, parent, false);
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.features_normal_item_layout, parent, false);
             return new ItemRowHolder(v);
         }
 
@@ -251,12 +252,12 @@ public class CategoryActivity extends AppCompatActivity implements Utils.OnLangC
         public void onBindViewHolder(@NonNull CategoryAdapter.ItemRowHolder holder, final int position) {
             final Category category = dataList.get(position);
             holder.text.setText(category.getName());
-            holder.image.setDefaultImageResId(R.drawable.hunar_logo_new);
-            holder.image.setImageUrl(category.getImage(), imageLoader);
-            holder.relativeLayout
+            Utils.loadImage(holder.image, category.getImage(), Utils.getCircularProgressDrawable(mContext, 2, 25));
+            holder.itemView
                     .setOnClickListener(v -> {
                         Constant.CATE_ID = Integer.parseInt(category.getId());
                         Constant.cate_name = category.getName();
+                        Constant.cat_img_url = category.getImage();
                         if (!category.getNoOfCate().equals("0")) {
                             Intent intent = new Intent(CategoryActivity.this, SubcategoryActivity.class);
                             startActivity(intent);
@@ -287,15 +288,15 @@ public class CategoryActivity extends AppCompatActivity implements Utils.OnLangC
         }
 
         public class ItemRowHolder extends RecyclerView.ViewHolder {
-            public NetworkImageView image;
+            public ImageView image;
             public TextView text;
             RelativeLayout relativeLayout;
 
             public ItemRowHolder(View itemView) {
                 super(itemView);
-                image = itemView.findViewById(R.id.cateImg);
-                text = itemView.findViewById(R.id.item_title);
-                relativeLayout = itemView.findViewById(R.id.cat_layout);
+                image = itemView.findViewById(R.id.ivFeatureItem);
+                text = itemView.findViewById(R.id.tvFeatureItemName);
+                // relativeLayout = itemView.findViewById(R.id.cat_layout);
             }
         }
     }

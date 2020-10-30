@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -70,7 +71,7 @@ public class VideoPlay1Activity extends AppCompatActivity implements MediaPlayer
     private boolean fullScreen = false;
     private ProgressBar progressBar;
     private Handler handler;
-    private TextView tvVideoTitle;
+    private TextView tvVideoTitle, tvVideoFullName;
     private List<VideoStatus> videoStatusList;
     private VideoListPlayAdapter videoListPlayAdapter;
     private ApiInterface apiInterface;
@@ -96,6 +97,7 @@ public class VideoPlay1Activity extends AppCompatActivity implements MediaPlayer
         }
 
         videoView = findViewById(R.id.videoView);
+        tvVideoFullName = findViewById(R.id.tvVideoFullName);
         srlVideoPlayerList = findViewById(R.id.srlVideoPlayerList);
         clVideoList = findViewById(R.id.clVideoList);
         ivBtnFullScreen = findViewById(R.id.ivBtnFullScreen);
@@ -175,6 +177,7 @@ public class VideoPlay1Activity extends AppCompatActivity implements MediaPlayer
                                 if (videoId == Integer.parseInt(videoAList.get(i).getId()) && url.equals(videoAList.get(i).getVideo())) {
                                     progressBar.setVisibility(View.VISIBLE);
                                     tvVideoTitle.setText(videoAList.get(i).getVideoName());
+                                    tvVideoFullName.setText(videoAList.get(i).getVideoName());
                                     videoView.setVideoURI(Uri.parse(videoAList.get(i).getVideo()));
                                     videoView.requestFocus();
                                     videoView.start();
@@ -248,7 +251,7 @@ public class VideoPlay1Activity extends AppCompatActivity implements MediaPlayer
         progressBar.setVisibility(View.GONE);
         ivBtnFullScreen.setVisibility(View.VISIBLE);
         tvVideoTitle.setVisibility(View.VISIBLE);
-        if (getIntent().getStringExtra("SEEK_TO")!=null && !first_check){
+        if (getIntent().getStringExtra("SEEK_TO") != null && !first_check) {
             videoView.seekTo(Integer.parseInt(getIntent().getStringExtra("SEEK_TO")));
             first_check = true;
         }
@@ -274,6 +277,7 @@ public class VideoPlay1Activity extends AppCompatActivity implements MediaPlayer
             videoListPlayAdapter.notifyDataSetChanged();
             progressBar.setVisibility(View.VISIBLE);
             tvVideoTitle.setText(videoAList.get(position).getVideoName());
+            tvVideoFullName.setText(videoAList.get(position).getVideoName());
             videoView.setVideoURI(Uri.parse(videoAList.get(position).getVideo()));
             videoView.requestFocus();
             videoView.start();
@@ -344,12 +348,12 @@ public class VideoPlay1Activity extends AppCompatActivity implements MediaPlayer
         if (videoView.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             ivBtnFullScreen.setImageResource(R.drawable.ic_baseline_fullscreen);
-        } else if (!Session.isLogin(VideoPlay1Activity.this)){
+        } else if (!Session.isLogin(VideoPlay1Activity.this)) {
             super.onBackPressed();
-        }else {
-            if (resume_time){
-            super.onBackPressed();}
-            else{
+        } else {
+            if (resume_time) {
+                super.onBackPressed();
+            } else {
                 send_resume_time();
             }
         }
@@ -377,6 +381,7 @@ public class VideoPlay1Activity extends AppCompatActivity implements MediaPlayer
                                     if (videoAList.get(position).getIsUnlocked().equals("1")) {
                                         progressBar.setVisibility(View.VISIBLE);
                                         tvVideoTitle.setText(videoAList.get(position).getVideoName());
+                                        tvVideoFullName.setText(videoAList.get(position).getVideoName());
                                         videoView.setVideoURI(Uri.parse(videoAList.get(position).getVideo()));
                                         videoView.requestFocus();
                                         videoView.start();
@@ -399,6 +404,7 @@ public class VideoPlay1Activity extends AppCompatActivity implements MediaPlayer
                                 if (position != -1 && position < videoAList.size()) {
                                     progressBar.setVisibility(View.VISIBLE);
                                     tvVideoTitle.setText(videoAList.get(position).getVideoName());
+                                    tvVideoFullName.setText(videoAList.get(position).getVideoName());
                                     videoView.setVideoURI(Uri.parse(videoAList.get(position).getVideo()));
                                     videoView.requestFocus();
                                     videoView.start();
@@ -416,13 +422,16 @@ public class VideoPlay1Activity extends AppCompatActivity implements MediaPlayer
                             });
                             progressBar.setVisibility(View.VISIBLE);
                             tvVideoTitle.setText(videoAList.get(position).getVideoName());
+                            tvVideoFullName.setText(videoAList.get(position).getVideoName());
                             videoView.setVideoURI(Uri.parse(videoAList.get(position).getVideo()));
                             videoId = Integer.parseInt(videoAList.get(position).getId());
                             videoView.requestFocus();
                             videoView.start();
                             videoAList.get(position).setIsPlayed("1");
+                            videoAList.get(position).setIsUnlocked("1");
                             videoListPlayAdapter = new VideoListPlayAdapter(VideoPlay1Activity.this, videoAList);
                             rvVideoList.setAdapter(videoListPlayAdapter);
+
                         } else {
                             tvVideoPlayerListError.setVisibility(View.VISIBLE);
                             tvVideoPlayerListError.setText("not found");
@@ -462,24 +471,27 @@ public class VideoPlay1Activity extends AppCompatActivity implements MediaPlayer
             holder.tvVideoName.setText(videoNew.getVideoName());
             Utils.loadImage(holder.ivVideo, videoNew.getThumbnail(), Utils.getCircularProgressDrawable(context, 5, 15));
             if (videoNew.getIsPlayed().equals("1")) {
-                holder.itemView.setVisibility(View.GONE);
-                holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
+                holder.tvVideoName.setTextColor(Color.BLUE);
+//                holder.itemView.setVisibility(View.GONE);
+//                holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
+//            } else {
+//                holder.itemView.setVisibility(View.VISIBLE);
+//                holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             } else {
-                holder.itemView.setVisibility(View.VISIBLE);
-                holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                holder.tvVideoName.setTextColor(context.getResources().getColor(R.color.colorPrimary));
             }
             if (videoNew.getIsUnlocked().equals("1")) {
                 holder.ivVideoLock.setImageResource(R.drawable.ic_open_padlock);
             } else {
                 holder.ivVideoLock.setImageResource(R.drawable.ic_padlock);
             }
-
             holder.itemView.setOnClickListener(v -> {
                 if (videoNew.getIsUnlocked().equals("1")) {
                     VideoPlay1Activity.this.position = position;
                     VideoPlay1Activity.this.videoId = Integer.parseInt(videoAList.get(position).getId());
                     progressBar.setVisibility(View.VISIBLE);
                     tvVideoTitle.setText(videoAList.get(position).getVideoName());
+                    tvVideoFullName.setText(videoAList.get(position).getVideoName());
                     videoView.setVideoURI(Uri.parse(videoAList.get(position).getVideo()));
                     videoView.requestFocus();
                     videoView.start();
@@ -668,7 +680,7 @@ public class VideoPlay1Activity extends AppCompatActivity implements MediaPlayer
         });
     }
 
-    private void send_resume_time(){
+    private void send_resume_time() {
 
         ProgressDialog pd = new ProgressDialog(VideoPlay1Activity.this);
         pd.setCanceledOnTouchOutside(false);
@@ -681,27 +693,27 @@ public class VideoPlay1Activity extends AppCompatActivity implements MediaPlayer
         } else {
             userr_id = SharedPreferencesUtil.read(SharedPreferencesUtil.USER_ID, "");
         }
-        Log.e("Video Details ","  >>>>>>>>> \n"+" Current Position - "
-                +Utils.get_ms_formatvideo(videoView.getCurrentPosition())+"\n Total Length - "
-                +Utils.get_ms_formatvideo(videoView.getDuration())+ "--- User id  "+userr_id+"---  Video id "+videoId+ " --- "+"--- POSITION "+position+ " --- " );
+        Log.e("Video Details ", "  >>>>>>>>> \n" + " Current Position - "
+                + Utils.get_ms_formatvideo(videoView.getCurrentPosition()) + "\n Total Length - "
+                + Utils.get_ms_formatvideo(videoView.getDuration()) + "--- User id  " + userr_id + "---  Video id " + videoId + " --- " + "--- POSITION " + position + " --- ");
 
         ApiInterface apiInterface = ApiClient.getMainClient().create(ApiInterface.class);
         Call<FavoriteResponse> send_resume_time_api = apiInterface.send_resume_timing("6808", "1",
-                userr_id, ""+videoId,""+videoView.getCurrentPosition(),""+position);
+                userr_id, "" + videoId, "" + videoView.getCurrentPosition(), "" + position);
 
         send_resume_time_api.enqueue(new Callback<FavoriteResponse>() {
             @Override
             public void onResponse(Call<FavoriteResponse> call, Response<FavoriteResponse> response) {
                 pd.dismiss();
-                Utils.retro_call_info(""+response.raw().request().url(),new Gson().toJson(response.body()));
-                if (response.isSuccessful()){
+                Utils.retro_call_info("" + response.raw().request().url(), new Gson().toJson(response.body()));
+                if (response.isSuccessful()) {
                     if (!response.body().getError()) {
                         Toast.makeText(VideoPlay1Activity.this, "Resume Time Saved...", Toast.LENGTH_SHORT).show();
                         resume_time = true;
                         onBackPressed();
-                    }else{
+                    } else {
                     }
-                }else{
+                } else {
                 }
             }
 

@@ -2,9 +2,11 @@ package com.ics.hunar.activity;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,6 +20,7 @@ import com.ics.hunar.helper.ApiClient;
 import com.ics.hunar.helper.ApiInterface;
 import com.ics.hunar.helper.Session;
 import com.ics.hunar.helper.SharedPreferencesUtil;
+import com.ics.hunar.helper.Utils;
 import com.ics.hunar.model.UnlockStatusResponse;
 import com.ics.hunar.model.VideoNew;
 import com.ics.hunar.model.VideoNewResponse;
@@ -41,11 +44,14 @@ public class VideoPlayActivity extends AppCompatActivity implements VideoListAda
     private List<VideoStatus> videoStatusList;
     private ApiInterface apiInterface;
     private String userId;
+    private ImageView ivCatImg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_play);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle(Constant.cate_name);
         SharedPreferencesUtil.init(this);
         apiInterface = ApiClient.getMainClient().create(ApiInterface.class);
         if (!Session.getUserData(Session.USER_ID, this).equals("")) {
@@ -54,6 +60,7 @@ public class VideoPlayActivity extends AppCompatActivity implements VideoListAda
             userId = SharedPreferencesUtil.read(SharedPreferencesUtil.USER_ID, "");
         }
         recyclerView = findViewById(R.id.rvVideoList);
+        ivCatImg = findViewById(R.id.ivCatImg);
         srlVideoPlayer = findViewById(R.id.srlVideoPlayer);
         tvError = findViewById(R.id.tvError);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -166,6 +173,8 @@ public class VideoPlayActivity extends AppCompatActivity implements VideoListAda
                     if (response.body() != null) {
                         if (response.body().getError().equalsIgnoreCase("false")) {
                             recyclerView.setVisibility(View.VISIBLE);
+                            ivCatImg.setVisibility(View.VISIBLE);
+                            Utils.loadImage(ivCatImg, Constant.cat_img_url, Utils.getCircularProgressDrawable(VideoPlayActivity.this, 2, 25));
                             videoAList = new ArrayList<>();
                             videoAList.clear();
                             videoAList.addAll(response.body().getVideoNewList());

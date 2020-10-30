@@ -10,6 +10,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -18,7 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -27,7 +28,6 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.NetworkImageView;
 import com.android.volley.toolbox.StringRequest;
 import com.google.android.material.snackbar.Snackbar;
 import com.ics.hunar.Constant;
@@ -73,7 +73,7 @@ public class SubcategoryActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         swipeRefreshLayout = findViewById(R.id.swipeLayout);
         recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(SubcategoryActivity.this));
+        recyclerView.setLayoutManager(new GridLayoutManager(SubcategoryActivity.this, 3));
         txtBlankList.setText(getString(R.string.no_category));
         subCateList = new ArrayList<>();
         getData();
@@ -190,7 +190,7 @@ public class SubcategoryActivity extends AppCompatActivity {
 
         @Override
         public SubCategoryAdapter.ItemRowHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_category, parent, false);
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.features_normal_item_layout, parent, false);
             return new ItemRowHolder(v);
         }
 
@@ -199,9 +199,8 @@ public class SubcategoryActivity extends AppCompatActivity {
             txtBlankList.setVisibility(View.GONE);
             final SubCategory subCate = dataList.get(position);
             holder.text.setText(subCate.getName());
-            holder.image.setDefaultImageResId(R.drawable.hunar_logo_new);
-            holder.image.setImageUrl(subCate.getImage(), imageLoader);
-            holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
+            Utils.loadImage(holder.image, subCate.getImage(), Utils.getCircularProgressDrawable(mContext, 2, 25));
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Constant.SUB_CAT_ID = Integer.parseInt(subCate.getId());
@@ -229,15 +228,16 @@ public class SubcategoryActivity extends AppCompatActivity {
         }
 
         public class ItemRowHolder extends RecyclerView.ViewHolder {
-            public NetworkImageView image;
+            public ImageView image;
             public TextView text;
             RelativeLayout relativeLayout;
 
             public ItemRowHolder(View itemView) {
                 super(itemView);
-                image = itemView.findViewById(R.id.cateImg);
-                text = itemView.findViewById(R.id.item_title);
-                relativeLayout = itemView.findViewById(R.id.cat_layout);
+                image = itemView.findViewById(R.id.ivFeatureItem);
+                text = itemView.findViewById(R.id.tvFeatureItemName);
+
+//                relativeLayout = itemView.findViewById(R.id.cat_layout);
             }
         }
     }

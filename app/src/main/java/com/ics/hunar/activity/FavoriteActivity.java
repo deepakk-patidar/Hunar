@@ -318,7 +318,7 @@ public class FavoriteActivity extends AppCompatActivity {
         @NonNull
         @Override
         public FavViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(context).inflate(R.layout.video_list_layout, parent, false);
+            View view = LayoutInflater.from(context).inflate(R.layout.fav_video_list_layout, parent, false);
             return new FavViewHolder(view);
         }
 
@@ -326,7 +326,8 @@ public class FavoriteActivity extends AppCompatActivity {
         public void onBindViewHolder(@NonNull FavViewHolder holder, int position) {
             VideoStatus videoStatus = videoStatusList.get(position);
             holder.tvVideoName.setText(videoStatus.getVideoName());
-            Utils.loadImage(holder.ivVideo, videoStatus.getThumbnail(), Utils.getCircularProgressDrawable(context,5,15));
+            holder.tvVideoCategory.setText(videoStatus.getCategory_name());
+            Utils.loadImage(holder.ivVideo, videoStatus.getThumbnail(), Utils.getCircularProgressDrawable(context, 5, 15));
             if (videoStatus.getIsFavourite() != null) {
                 if (videoStatus.getIsFavourite().equals("1")) {
                     holder.btn_like.setLiked(true);
@@ -378,13 +379,14 @@ public class FavoriteActivity extends AppCompatActivity {
         }
 
         class FavViewHolder extends RecyclerView.ViewHolder {
-            private TextView tvVideoName;
+            private TextView tvVideoName, tvVideoCategory;
             private ImageView ivVideo, ivDownload, ivVideoIcon;
             private LikeButton btn_like;
 
             public FavViewHolder(@NonNull View itemView) {
                 super(itemView);
                 tvVideoName = itemView.findViewById(R.id.tvVideoName);
+                tvVideoCategory = itemView.findViewById(R.id.tvVideoCategory);
                 ivVideo = itemView.findViewById(R.id.ivVideo);
                 ivDownload = itemView.findViewById(R.id.ivDownload);
                 ivVideoIcon = itemView.findViewById(R.id.ivVideoIcon);

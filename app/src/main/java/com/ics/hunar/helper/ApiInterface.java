@@ -75,7 +75,7 @@ public interface ApiInterface {
 
     @FormUrlEncoded
     @POST("./")
-    Call<FeaturesResponse> getFeatures(@Field("access_key") String access_key, @Field("get_featured") String get_featured);
+    Call<FeaturesResponse> getFeatures(@Field("access_key") String access_key, @Field("get_featured") String get_featured, @Field("language_id") String language_id);
 
     @FormUrlEncoded
     @POST("./")
@@ -96,7 +96,6 @@ public interface ApiInterface {
             @Field("user_id") String user_id,
             @Field("video_id") String video_id
     );
-
 
 
 }

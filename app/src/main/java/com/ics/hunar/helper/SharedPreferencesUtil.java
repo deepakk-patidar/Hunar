@@ -19,6 +19,7 @@ public class SharedPreferencesUtil {
     public static final String SUB_CATEGORY_NAME = "sub_category_name";
     public static final String LAST_PLAY_VIDEO = "last_play_video";
     public static final String FB_ID = "fb_id";
+    public static final String STATUS = "status";
 
     public static void init(Context context) {
         if (mSharedPref == null)

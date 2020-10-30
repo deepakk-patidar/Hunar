@@ -5,7 +5,6 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class VideoStatus {
-
     @SerializedName("id")
     @Expose
     private String id;
@@ -36,21 +35,21 @@ public class VideoStatus {
     @SerializedName("language_id")
     @Expose
     private String languageId;
-    @SerializedName("video")
-    @Expose
-    private String video;
     @SerializedName("thumbnail")
     @Expose
     private String thumbnail;
     @SerializedName("video_name")
     @Expose
     private String videoName;
-    @SerializedName("level")
+    @SerializedName("category_name")
     @Expose
-    private String level;
-    @SerializedName("row_order")
+    private String category_name;
+    @SerializedName("subcategory_name")
     @Expose
-    private String rowOrder;
+    private String subcategory_name;
+    @SerializedName("language")
+    @Expose
+    private String language;
 
     public String getId() {
         return id;
@@ -132,14 +131,6 @@ public class VideoStatus {
         this.languageId = languageId;
     }
 
-    public String getVideo() {
-        return video;
-    }
-
-    public void setVideo(String video) {
-        this.video = video;
-    }
-
     public String getThumbnail() {
         return thumbnail;
     }
@@ -156,20 +147,27 @@ public class VideoStatus {
         this.videoName = videoName;
     }
 
-    public String getLevel() {
-        return level;
+    public String getCategory_name() {
+        return category_name;
     }
 
-    public void setLevel(String level) {
-        this.level = level;
+    public void setCategory_name(String category_name) {
+        this.category_name = category_name;
     }
 
-    public String getRowOrder() {
-        return rowOrder;
+    public String getSubcategory_name() {
+        return subcategory_name;
     }
 
-    public void setRowOrder(String rowOrder) {
-        this.rowOrder = rowOrder;
+    public void setSubcategory_name(String subcategory_name) {
+        this.subcategory_name = subcategory_name;
     }
 
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
 }

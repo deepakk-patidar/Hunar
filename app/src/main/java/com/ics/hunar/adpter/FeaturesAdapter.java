@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ics.hunar.Constant;
 import com.ics.hunar.R;
-import com.ics.hunar.activity.CategoryActivity;
 import com.ics.hunar.activity.SubcategoryActivity;
 import com.ics.hunar.helper.Utils;
 import com.ics.hunar.model.features.Category;
@@ -53,9 +52,11 @@ public class FeaturesAdapter extends RecyclerView.Adapter<FeaturesAdapter.Normal
                 public void onClick(View view) {
                     Constant.CATE_ID = Integer.parseInt(category.getId());
                     Constant.cate_name = category.getCategoryName();
-                        Intent intent = new Intent(context, SubcategoryActivity.class);
-                        context.startActivity(intent);
-                }});
+                    Constant.cat_img_url = category.getImage();
+                    Intent intent = new Intent(context, SubcategoryActivity.class);
+                    context.startActivity(intent);
+                }
+            });
 
             if (heading.equalsIgnoreCase("Features")) {
                 if (category.getFeatured().equals("1")) {

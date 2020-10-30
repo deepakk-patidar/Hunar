@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Hunar.iml" filepath="$PROJECT_DIR$/.idea/modules/Hunar.iml" group="Hunar" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Hunar-app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Hunar-app.iml" group="Hunar/app" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Hunar_August-Hunar.iml" filepath="$PROJECT_DIR$/.idea/modules/Hunar_August-Hunar.iml" group="Hunar" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="Hunar/app" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/HUNAR27OCT2020.Hunar.iml" filepath="$PROJECT_DIR$/.idea/modules/HUNAR27OCT2020.Hunar.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Hunar.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Hunar.app.iml" />
     </modules>
   </component>
 </project>

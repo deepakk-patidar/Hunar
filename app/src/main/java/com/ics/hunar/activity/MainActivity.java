@@ -84,7 +84,7 @@ import me.relex.circleindicator.CircleIndicator;
 import retrofit2.Call;
 import retrofit2.Callback;
 
-public class MainActivity extends DrawerActivity implements View.OnClickListener {
+public class MainActivity extends DrawerActivity implements View.OnClickListener, Utils.OnLangChangeListener {
     private Context context = MainActivity.this;
     private SharedPreferences settings;
     public static DBHelper dbHelper;
@@ -218,12 +218,14 @@ public class MainActivity extends DrawerActivity implements View.OnClickListener
         if (!Session.isLogin(MainActivity.this)) {
             tvResumeHeading.setVisibility(View.GONE);
             rvHomeResumeHistory.setVisibility(View.GONE);
-        }else{
+        } else {
             get_resumed_video();
         }
 
         btnFeaturesRetry.setOnClickListener(v -> getFeatures());
-        getFeatures();
+        if (SharedPreferencesUtil.read(SharedPreferencesUtil.STATUS, false)) {
+            getFeatures();
+        }
         getBanner();
     }
 
@@ -231,11 +233,11 @@ public class MainActivity extends DrawerActivity implements View.OnClickListener
         svHome.setVisibility(View.GONE);
         pbFeatures.setVisibility(View.VISIBLE);
         btnFeaturesRetry.setVisibility(View.GONE);
-        apiInterface.getFeatures("6808", "1").enqueue(new Callback<FeaturesResponse>() {
+        apiInterface.getFeatures("6808", "1", Session.getCurrentLanguage(MainActivity.this)).enqueue(new Callback<FeaturesResponse>() {
             @Override
             public void onResponse(Call<FeaturesResponse> call, retrofit2.Response<FeaturesResponse> response) {
                 pbFeatures.setVisibility(View.GONE);
-                Utils.retro_call_info(""+response.raw().request().url(),""+new Gson().toJson(response.body()));
+                Utils.retro_call_info("" + response.raw().request().url(), "" + new Gson().toJson(response.body()));
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
                         if (response.body().getError().equalsIgnoreCase("false")) {
@@ -302,7 +304,7 @@ public class MainActivity extends DrawerActivity implements View.OnClickListener
             @Override
             public void onResponse(Call<BannerResponse> call, retrofit2.Response<BannerResponse> response) {
                 pbViewPager.setVisibility(View.GONE);
-                Utils.retro_call_info(""+response.raw().request().url(),""+new Gson().toJson(response.body()));
+                Utils.retro_call_info("" + response.raw().request().url(), "" + new Gson().toJson(response.body()));
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
                         if (response.body().getError().equalsIgnoreCase("false")) {
@@ -513,22 +515,22 @@ public class MainActivity extends DrawerActivity implements View.OnClickListener
         overridePendingTransition(R.anim.open_next, R.anim.close_next);
     }
 
-    private void get_resumed_video(){
+    private void get_resumed_video() {
 
-        apiInterface.get_resume_time("6808","1",
-                Session.getUserData(Session.USER_ID, MainActivity.this),"1").enqueue(new Callback<Resume_List_Model>() {
+        apiInterface.get_resume_time("6808", "1",
+                Session.getUserData(Session.USER_ID, MainActivity.this), "1").enqueue(new Callback<Resume_List_Model>() {
             @Override
             public void onResponse(Call<Resume_List_Model> call, retrofit2.Response<Resume_List_Model> response) {
-                Utils.retro_call_info(""+response.raw().request().url(),""+new Gson().toJson(response.body()));
-                if (!response.body().getError()){
-                    rvHomeResumeHistory.setLayoutManager(new LinearLayoutManager(MainActivity.this,LinearLayoutManager.HORIZONTAL,false));
-                    rvHomeResumeHistory.setAdapter(new Resume_Video_Adapter(MainActivity.this,response.body().getData()));
+                Utils.retro_call_info("" + response.raw().request().url(), "" + new Gson().toJson(response.body()));
+                if (!response.body().getError()) {
+                    rvHomeResumeHistory.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.HORIZONTAL, false));
+                    rvHomeResumeHistory.setAdapter(new Resume_Video_Adapter(MainActivity.this, response.body().getData()));
                 }
             }
 
             @Override
             public void onFailure(Call<Resume_List_Model> call, Throwable t) {
-                Toast.makeText(context, ""+t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "" + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -606,6 +608,15 @@ public class MainActivity extends DrawerActivity implements View.OnClickListener
                     Utils.RemoveGameRoomId(FirebaseAuth.getInstance().getUid());
             }
         }
+        Utils.setOnLangChangeListener(this);
+    }
+
+    @Override
+    public void onLangChange(boolean change) {
+        if (change) {
+            getFeatures();
+            SharedPreferencesUtil.write(SharedPreferencesUtil.STATUS, true);
+        }
     }
 
     @Override
@@ -619,7 +630,7 @@ public class MainActivity extends DrawerActivity implements View.OnClickListener
         if (!Session.isLogin(MainActivity.this)) {
             tvResumeHeading.setVisibility(View.GONE);
             rvHomeResumeHistory.setVisibility(View.GONE);
-        }else{
+        } else {
             get_resumed_video();
         }
     }

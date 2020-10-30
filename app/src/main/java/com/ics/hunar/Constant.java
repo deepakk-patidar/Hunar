@@ -148,6 +148,7 @@ public class Constant {
     public static String LANGUAGE_MODE;
     public static String OPTION_E_MODE;
     public static String SHARE_APP_TEXT;
+    public static String cat_img_url;
 
 
     public static String PROGRESS_COLOR = "#306c83";  // change progress color of circle timer
